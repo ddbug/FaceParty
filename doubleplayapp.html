@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>吹水冰球</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app doubleplay">
+    <header class="header">
+      <h1>吹水冰球</h1>
+    </header>
+
+    <main class="stage">
+      <div class="video-wrap">
+        <video id="video" class="video" autoplay playsinline></video>
+        <canvas id="overlay" class="overlay"></canvas>
+        <canvas id="threeOverlay" class="three-overlay"></canvas>
+        <div class="scoreboard">
+          <div class="score-card">
+            <span class="score-label">P1</span>
+            <span id="scoreRight" class="score-value">0</span>
+          </div>
+          <div class="score-divider">VS</div>
+          <div class="score-card">
+            <span class="score-label">P2</span>
+            <span id="scoreLeft" class="score-value">0</span>
+          </div>
+        </div>
+        <div id="winOverlay" class="win-overlay" aria-hidden="true">
+          <div class="win-card">
+            <div id="winText" class="win-text">P1 胜利</div>
+            <button id="restartBtn" class="restart-button" type="button">重新开始游戏</button>
+          </div>
+        </div>
+        <div class="cooldown left">
+          <div class="cooldown-label">吸入冷却</div>
+          <div class="cooldown-bar">
+            <div id="cooldownFillLeft" class="cooldown-fill"></div>
+          </div>
+          <div class="cooldown-label">吸气累计</div>
+          <div class="cooldown-bar">
+            <div id="inhaleFillLeft" class="cooldown-fill"></div>
+          </div>
+        </div>
+        <div class="cooldown right">
+          <div class="cooldown-label">吸入冷却</div>
+          <div class="cooldown-bar">
+            <div id="cooldownFillRight" class="cooldown-fill"></div>
+          </div>
+          <div class="cooldown-label">吸气累计</div>
+          <div class="cooldown-bar">
+            <div id="inhaleFillRight" class="cooldown-fill"></div>
+          </div>
+        </div>
+      </div>
+      <div class="start-wrap">
+        <button id="startGameBtn" class="start-button" type="button" disabled>开始游戏</button>
+      </div>
+      <div class="controls">
+        <div class="control-card">
+          <label>识别人数</label>
+          <div class="option-row">
+            <label class="radio">
+              <input type="radio" name="faceCount" value="1" />
+              只识别 1 人
+            </label>
+            <label class="radio">
+              <input type="radio" name="faceCount" value="2" checked />
+              最多识别 2 人
+            </label>
+          </div>
+        </div>
+        <div class="control-card">
+          <label>显示摄像头背景</label>
+          <div class="option-row">
+            <label class="radio">
+              <input id="bgToggle" type="checkbox" checked />
+              显示
+            </label>
+          </div>
+        </div>
+      </div>
+      <div id="status" class="status">正在初始化摄像头...</div>
+      <div class="legend">
+        <span class="dot"></span>
+        <span>面具会随表情与嘴型动态变化</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="doublePlayApp.js"></script>
+</body>
+</html>

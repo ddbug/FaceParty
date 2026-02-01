@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>人脸识别跟踪系统</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+
+    </header>
+
+    <main class="stage">
+      <div class="video-wrap">
+        <video id="video" class="video" autoplay playsinline></video>
+        <canvas id="overlay" class="overlay"></canvas>
+        <div class="cooldown">
+          <div class="cooldown-label">吸入冷却</div>
+          <div class="cooldown-bar">
+            <div id="cooldownFill" class="cooldown-fill"></div>
+          </div>
+          <div class="cooldown-label">吸气累计</div>
+          <div class="cooldown-bar">
+            <div id="inhaleFill" class="cooldown-fill"></div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="control-card">
+          <label>识别人数</label>
+          <div class="option-row">
+            <label class="radio">
+              <input type="radio" name="faceCount" value="1" checked />
+              只识别 1 人
+            </label>
+            <label class="radio">
+              <input type="radio" name="faceCount" value="2" />
+              最多识别 2 人
+            </label>
+          </div>
+        </div>
+        <div class="control-card">
+          <label>显示摄像头背景</label>
+          <div class="option-row">
+            <label class="radio">
+              <input id="bgToggle" type="checkbox" checked />
+              显示
+            </label>
+          </div>
+        </div>
+      </div>
+      <div id="status" class="status">正在初始化摄像头...</div>
+      <div class="legend">
+        <span class="dot"></span>
+        <span>面具会随表情与嘴型动态变化</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
