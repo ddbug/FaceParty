@@ -15,7 +15,11 @@
 body {
   margin: 0;
   font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: #0f172a url("assets/BackGround.png") center top / cover no-repeat fixed;
+  background-color: var(--bg);
+  background-image: url("assets/BackGround-1600.jpg");
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
   color: var(--text);
   min-height: 100vh;
   display: flex;

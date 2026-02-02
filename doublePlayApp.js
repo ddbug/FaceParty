@@ -165,9 +165,12 @@ function drawPoopMarks(landmarks, side) {
   const faceBottom = landmarks[152];
   if (!centerPoint || !faceTop || !faceBottom) return;
   const center = toPixel(centerPoint);
+  const topPx = toPixel(faceTop);
+  const bottomPx = toPixel(faceBottom);
+  if (!center || !topPx || !bottomPx) return;
   const radius = Math.hypot(
-    toPixel(faceTop).x - toPixel(faceBottom).x,
-    toPixel(faceTop).y - toPixel(faceBottom).y
+    topPx.x - bottomPx.x,
+    topPx.y - bottomPx.y
   ) / 2;
   poopMarks.forEach((mark) => {
     if (mark.side !== side) return;
@@ -265,6 +268,7 @@ function clearOverlay() {
 }
 
 function toPixel(point) {
+  if (!point || !overlay.width || !overlay.height) return null;
   return {
     x: point.x * overlay.width,
     y: point.y * overlay.height,
@@ -360,6 +364,7 @@ function getEyeOpenness(landmarks, indices) {
   const p4 = toPixel(landmarks[indices[3]]);
   const p5 = toPixel(landmarks[indices[4]]);
   const p6 = toPixel(landmarks[indices[5]]);
+  if (!p1 || !p2 || !p3 || !p4 || !p5 || !p6) return 0;
 
   const vertical = Math.hypot(p2.x - p5.x, p2.y - p5.y) + Math.hypot(p3.x - p6.x, p3.y - p6.y);
   const horizontal = Math.hypot(p1.x - p4.x, p1.y - p4.y);
@@ -371,6 +376,7 @@ function getMouthOpenness(landmarks) {
   const lower = toPixel(landmarks[MOUTH_LOWER]);
   const left = toPixel(landmarks[MOUTH_LEFT]);
   const right = toPixel(landmarks[MOUTH_RIGHT]);
+  if (!upper || !lower || !left || !right) return 0;
 
   const vertical = Math.hypot(upper.x - lower.x, upper.y - lower.y);
   const horizontal = Math.hypot(left.x - right.x, left.y - right.y);
@@ -382,6 +388,7 @@ function getMouthWidthRatio(landmarks) {
   const right = toPixel(landmarks[MOUTH_RIGHT]);
   const faceLeft = toPixel(landmarks[234]);
   const faceRight = toPixel(landmarks[454]);
+  if (!left || !right || !faceLeft || !faceRight) return 0;
   const mouthWidth = Math.hypot(left.x - right.x, left.y - right.y);
   const faceWidth = Math.hypot(faceLeft.x - faceRight.x, faceLeft.y - faceRight.y);
   return mouthWidth / Math.max(faceWidth, 0.001);
@@ -392,6 +399,7 @@ function getLipGapRatio(landmarks) {
   const lower = toPixel(landmarks[MOUTH_LOWER]);
   const faceTop = toPixel(landmarks[10]);
   const faceBottom = toPixel(landmarks[152]);
+  if (!upper || !lower || !faceTop || !faceBottom) return 0;
   const lipGap = Math.hypot(upper.x - lower.x, upper.y - lower.y);
   const faceHeight = Math.hypot(faceTop.x - faceBottom.x, faceTop.y - faceBottom.y);
   return lipGap / Math.max(faceHeight, 0.001);
@@ -409,6 +417,7 @@ function drawPath(points, close = false) {
 
 function drawMask(landmarks, fillColor = 'rgba(0, 0, 0, 0)') {
   const outline = FACE_OUTLINE.map((index) => toPixel(landmarks[index]));
+  if (outline.some((pt) => !pt)) return;
   drawPath(outline, true);
   const canDrawTexture = useFaceTexture && faceTexture.complete && faceTexture.naturalWidth > 0;
   if (canDrawTexture) {
@@ -441,6 +450,9 @@ function drawMask(landmarks, fillColor = 'rgba(0, 0, 0, 0)') {
 function getMouthDirection(landmarks) {
   const upperLip = toPixel(landmarks[MOUTH_UPPER]);
   const lowerLip = toPixel(landmarks[MOUTH_LOWER]);
+  if (!upperLip || !lowerLip) {
+    return { mouthCenter: { x: overlay.width / 2 || 0, y: overlay.height / 2 || 0 }, dirX: 0, dirY: -1, nz: 0 };
+  }
   const mouthCenter = {
     x: (upperLip.x + lowerLip.x) / 2,
     y: (upperLip.y + lowerLip.y) / 2,
@@ -1222,7 +1234,11 @@ async function setupFaceMesh() {
           player.faceCenter = toPixel(faceCenterPoint);
           const faceTop = toPixel(landmarks[10]);
           const faceBottom = toPixel(landmarks[152]);
-          player.faceRadius = Math.hypot(faceTop.x - faceBottom.x, faceTop.y - faceBottom.y) / 2;
+          if (player.faceCenter && faceTop && faceBottom) {
+            player.faceRadius = Math.hypot(faceTop.x - faceBottom.x, faceTop.y - faceBottom.y) / 2;
+          } else {
+            player.faceRadius = 0;
+          }
         } else {
           player.faceCenter = null;
           player.faceRadius = 0;
@@ -1252,7 +1268,9 @@ async function setupFaceMesh() {
         const headTop = toPixel(landmarks[10]);
         const label = side === 'left' ? 'P2' : 'P1';
         const labelColor = side === 'left' ? '#dc2626' : '#2563eb';
-        drawPlayerLabel(label, headTop.x, headTop.y, labelColor);
+        if (headTop) {
+          drawPlayerLabel(label, headTop.x, headTop.y, labelColor);
+        }
         if (player.inhaleState === 'ready' && mouthIsOpen) {
           player.inhaleState = 'active';
           player.inhaleActiveStart = now;
