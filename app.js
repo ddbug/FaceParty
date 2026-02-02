@@ -421,28 +421,7 @@ function drawPath(points, close = false) {
 }
 
 function drawMask(landmarks) {
-  const outline = FACE_OUTLINE.map((index) => toPixel(landmarks[index]));
-  drawPath(outline, true);
-  ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
-  ctx.lineWidth = 2;
-  ctx.shadowColor = 'rgba(56, 189, 248, 0.65)';
-  ctx.shadowBlur = 16;
-  ctx.stroke();
-
-  const leftEye = LEFT_EYE.map((index) => toPixel(landmarks[index]));
-  const rightEye = RIGHT_EYE.map((index) => toPixel(landmarks[index]));
-
-  ctx.save();
-  ctx.shadowBlur = 0;
-  ctx.lineWidth = 1.5;
-  ctx.strokeStyle = 'rgba(226, 232, 240, 0.7)';
-  drawPath(leftEye, true);
-  ctx.stroke();
-  drawPath(rightEye, true);
-  ctx.stroke();
-  ctx.restore();
+  // Intentionally empty: no face outline/overlay drawn.
 }
 
 function getMouthDirection(landmarks) {
